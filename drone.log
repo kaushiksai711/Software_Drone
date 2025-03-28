@@ -1,0 +1,33 @@
+2025-03-28 14:06:04,281 - DroneMain - INFO - Initializing Drone Control System
+2025-03-28 14:06:04,282 - FlightController - ERROR - Failed to connect to flight controller: could not open port '/dev/ttyUSB0': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+2025-03-28 14:06:04,282 - DroneMain - ERROR - Failed to initialize subsystems: could not open port '/dev/ttyUSB0': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+2025-03-28 14:09:30,804 - DroneMain - INFO - Initializing Drone Control System
+2025-03-28 14:09:30,804 - FlightController - ERROR - Failed to connect to flight controller: could not open port 'COM1': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2025-03-28 14:09:30,807 - DroneMain - ERROR - Failed to initialize subsystems: could not open port 'COM1': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2025-03-28 14:19:08,005 - DroneMain - INFO - Initializing Drone Control System
+2025-03-28 14:19:08,120 - FlightController - ERROR - Failed to connect to flight controller: could not open port '/dev/ttyUSB0': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+2025-03-28 14:19:08,121 - DroneMain - ERROR - Failed to initialize subsystems: could not open port '/dev/ttyUSB0': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+2025-03-28 14:23:45,827 - DroneMain - INFO - Initializing Drone Control System
+2025-03-28 14:23:45,827 - FlightController - ERROR - Failed to connect to flight controller: could not open port '/dev/ttyUSB0': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+2025-03-28 14:23:45,827 - DroneMain - ERROR - Failed to initialize subsystems: could not open port '/dev/ttyUSB0': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+2025-03-28 14:23:55,213 - DroneMain - INFO - Initializing Drone Control System
+2025-03-28 14:23:55,213 - FlightController - ERROR - Failed to connect to flight controller: could not open port '/dev/ttyUSB0': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+2025-03-28 14:23:55,213 - DroneMain - ERROR - Failed to initialize subsystems: could not open port '/dev/ttyUSB0': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+2025-03-28 14:28:21,665 - DroneMain - INFO - Initializing Drone Control System
+2025-03-28 14:28:21,716 - FlightController - ERROR - Failed to connect to flight controller: could not open port 'COM1': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2025-03-28 14:28:21,719 - FlightController - INFO - Available ports:
+2025-03-28 14:28:21,720 - DroneMain - ERROR - Failed to initialize subsystems: could not open port 'COM1': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2025-03-28 14:30:36,967 - DroneMain - INFO - Initializing Drone Control System
+2025-03-28 14:30:37,004 - FlightController - WARNING - Failed to connect to physical port: could not open port 'COM1': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+2025-03-28 14:30:37,004 - FlightController - INFO - Falling back to dummy connection
+2025-03-28 14:30:37,004 - CameraSystem - WARNING - Config file config/camera_config.json not found, using defaults
+2025-03-28 14:30:37,039 - CameraSystem - INFO - OpenCV windows initialized
+2025-03-28 14:30:37,040 - LaserSystem - WARNING - Config file config/laser_config.json not found, using defaults
+2025-03-28 14:30:37,040 - LaserSystem - ERROR - Connection attempt 1 failed: could not open port '/dev/ttyUSB1': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+2025-03-28 14:30:38,042 - LaserSystem - ERROR - Connection attempt 2 failed: could not open port '/dev/ttyUSB1': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+2025-03-28 14:30:39,043 - LaserSystem - ERROR - Connection attempt 3 failed: could not open port '/dev/ttyUSB1': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+2025-03-28 14:30:39,044 - LaserSystem - ERROR - Failed to connect to laser module after all attempts
+2025-03-28 14:30:39,044 - DroneMain - INFO - All subsystems initialized successfully
+2025-03-28 14:30:39,044 - DroneMain - INFO - Starting sensor calibration
+2025-03-28 14:30:39,045 - FlightController - INFO - Calibrating flight controller
+2025-03-28 14:30:39,045 - FlightController - INFO - Disarming flight controller
