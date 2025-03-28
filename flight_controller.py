@@ -83,15 +83,25 @@ class FlightController:
             else:
                 # Try to connect to physical port
                 try:
-                    self.serial = serial.Serial(
-                        self.port,
-                        self.baudrate,
-                        timeout=1,
-                        bytesize=serial.EIGHTBITS,
-                        parity=serial.PARITY_NONE,
-                        stopbits=serial.STOPBITS_ONE
-                    )
-                    logger.info(f"Connected to flight controller on {self.port}")
+                    # Add retries for more robust connection
+                    for attempt in range(3):
+                        try:
+                            self.serial = serial.Serial(
+                                self.port,
+                                self.baudrate,
+                                timeout=1,
+                                bytesize=serial.EIGHTBITS,
+                                parity=serial.PARITY_NONE,
+                                stopbits=serial.STOPBITS_ONE
+                            )
+                            logger.info(f"Connected to flight controller on {self.port}")
+                            break
+                        except serial.SerialException as e:
+                            if attempt < 2:  # Only retry if not the last attempt
+                                logger.warning(f"Connection attempt {attempt+1} failed: {e}. Retrying...")
+                                time.sleep(1)
+                            else:
+                                raise
                 except serial.SerialException as e:
                     logger.warning(f"Failed to connect to physical port: {e}")
                     logger.info("Falling back to dummy connection")
@@ -190,6 +200,12 @@ class FlightController:
                 response = self.serial.readline().decode().strip()
                 if response:
                     self._process_response(response)
+                    
+                    # Update last reading time for sensor failure detection
+                    if response.startswith("ACC:") or response.startswith("GYRO:"):
+                        self.last_imu_reading_time = time.time()
+                    elif response.startswith("BARO:"):
+                        self.last_baro_reading_time = time.time()
             except Exception as e:
                 logger.error(f"Error reading from flight controller: {e}")
     
