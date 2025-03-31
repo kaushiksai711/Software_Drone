@@ -7,6 +7,7 @@ import time
 import threading
 import logging
 from enum import Enum
+import os
 
 # Import subsystems
 from flight_controller import FlightController
@@ -51,14 +52,25 @@ class DroneController:
         # Current mode
         self.mode = DroneMode.INITIALIZATION
         
+        # Create config directory if it doesn't exist
+        config_dir = "config"
+        if not os.path.exists(config_dir):
+            os.makedirs(config_dir)
+            logger.info(f"Created configuration directory: {config_dir}")
+        
         # Initialize subsystems
         try:
-            self.flight_controller = FlightController()
-            self.camera_system = CameraSystem()
-            self.laser_system = LaserSystem()
+            # Use environment variables or defaults for ports
+            flight_controller_port = os.environ.get('FLIGHT_CONTROLLER_PORT', '/dev/ttyUSB0')
+            laser_system_port = os.environ.get('LASER_SYSTEM_PORT', '/dev/ttyUSB1')
+            camera_url = os.environ.get('CAMERA_URL', 'http://esp32-cam.local:80/stream')
+            
+            self.flight_controller = FlightController(port=flight_controller_port)
+            self.camera_system = CameraSystem(camera_url=camera_url)
+            self.laser_system = LaserSystem(port=laser_system_port)
             self.navigation = NavigationSystem(self.camera_system, self.laser_system)
             self.emergency = EmergencySystem(self)
-            self.enhanced_emergency = EnhancedEmergencySystem(self)  # Add enhanced emergency system
+            self.enhanced_emergency = EnhancedEmergencySystem(self)
             self.communication = CommunicationSystem()
             
             # System status
@@ -102,14 +114,28 @@ class DroneController:
         logger.info("Stopping Drone Control System")
         self.is_running = False
         
-        # Stop all subsystems
-        self.flight_controller.stop()
-        self.camera_system.stop()
-        self.laser_system.stop()
-        self.navigation.stop()
-        self.emergency.stop()
-        self.enhanced_emergency.stop()  # Stop enhanced emergency system
-        self.communication.stop()
+        # First disarm motors for safety
+        try:
+            if self.flight_controller.is_armed:
+                self.flight_controller.disarm()
+        except Exception as e:
+            logger.error(f"Error disarming motors during shutdown: {e}")
+        
+        # Stop all subsystems with error handling
+        for subsystem_name, subsystem in [
+            ("flight_controller", self.flight_controller),
+            ("camera_system", self.camera_system),
+            ("laser_system", self.laser_system),
+            ("navigation", self.navigation),
+            ("emergency", self.emergency),
+            ("enhanced_emergency", self.enhanced_emergency),
+            ("communication", self.communication)
+        ]:
+            try:
+                subsystem.stop()
+                logger.info(f"Stopped {subsystem_name}")
+            except Exception as e:
+                logger.error(f"Error stopping {subsystem_name}: {e}")
         
         # Wait for control thread to finish
         if hasattr(self, 'control_thread') and self.control_thread.is_alive():
@@ -292,6 +318,23 @@ class DroneController:
             self.set_mode(DroneMode.LANDING)
         else:
             logger.warning("No box detected, cannot land at box")
+
+    def check_hardware(self):
+        """Check if all required hardware is connected"""
+        hardware_status = {
+            "flight_controller": self.flight_controller.serial and self.flight_controller.serial.is_open,
+            "camera": self.camera_system.check_connection(),  # Add this method to CameraSystem
+            "laser": self.laser_system.serial and self.laser_system.serial.is_open
+        }
+        
+        missing_hardware = [hw for hw, status in hardware_status.items() if not status]
+        
+        if missing_hardware:
+            logger.warning(f"Missing hardware: {', '.join(missing_hardware)}")
+            return False
+        else:
+            logger.info("All hardware connected")
+            return True
 
 if __name__ == "__main__":
     # Create and start the drone controller

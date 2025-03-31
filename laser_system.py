@@ -80,6 +80,15 @@ class LaserSystem:
         attempts = 0
         while attempts < self.config['reconnect_attempts']:
             try:
+                # Check if port exists before trying to connect
+                if not os.path.exists(self.port) and not self.port.startswith('COM'):
+                    logger.warning(f"Port {self.port} does not exist")
+                    attempts += 1
+                    if attempts < self.config['reconnect_attempts']:
+                        logger.info(f"Waiting {self.config['reconnect_delay']}s before retrying...")
+                        time.sleep(self.config['reconnect_delay'])
+                    continue
+                
                 self.serial = serial.Serial(
                     self.port,
                     self.baudrate,
@@ -89,6 +98,8 @@ class LaserSystem:
                     stopbits=serial.STOPBITS_ONE
                 )
                 logger.info(f"Connected to laser module on {self.port}")
+                # Add a last_reading_time attribute for sensor failure detection
+                self.last_reading_time = time.time()
                 return
             except Exception as e:
                 attempts += 1

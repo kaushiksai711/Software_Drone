@@ -15,6 +15,7 @@ import json
 import os
 from collections import deque
 from scipy.spatial.transform import Rotation
+import io
 
 logger = logging.getLogger("CameraSystem")
 
@@ -117,29 +118,32 @@ class CameraSystem:
                 time.sleep(1)  # Wait before retrying
     
     def _capture_frame(self):
-        """Capture a frame from the ESP32 camera"""
-        try:
-            # Get image from ESP32
-            response = requests.get(self.camera_url, timeout=1.0)
-            if response.status_code == 200:
-                # Convert response to image
-                image = Image.open(BytesIO(response.content))
-                
-                # Convert to OpenCV format
-                frame = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
-                
-                # Apply calibration if available
-                if self.calibration_data and self.distortion_coeffs is not None:
-                    frame = cv2.undistort(frame, self.camera_matrix, self.distortion_coeffs)
-                
-                return frame
-            else:
-                logger.error(f"Failed to get image from camera: {response.status_code}")
-                return None
-                
-        except Exception as e:
-            logger.error(f"Error capturing frame: {e}")
-            return None
+        """Capture a frame from the camera"""
+        retry_count = 0
+        max_retries = 3
+        retry_delay = 1.0  # seconds
+        
+        while retry_count < max_retries:
+            try:
+                response = requests.get(self.camera_url, timeout=2.0)
+                if response.status_code == 200:
+                    # Process the image
+                    img = Image.open(io.BytesIO(response.content))
+                    img_np = np.array(img)
+                    frame = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
+                    return frame
+                else:
+                    logger.warning(f"Failed to capture frame: HTTP {response.status_code}")
+            except requests.RequestException as e:
+                logger.error(f"Error capturing frame: {e}")
+            
+            retry_count += 1
+            if retry_count < max_retries:
+                logger.info(f"Retrying frame capture in {retry_delay} seconds...")
+                time.sleep(retry_delay)
+        
+        logger.error(f"Failed to capture frame after {max_retries} attempts")
+        return None
     
     def _process_frame(self, frame):
         """Process the captured frame"""
@@ -289,7 +293,13 @@ class CameraSystem:
                 })
         
         self.obstacles = fused_obstacles
-    
+    def check_connection(self):
+        """Check if the camera is accessible"""
+        try:
+            response = requests.get(self.camera_url, timeout=2.0)
+            return response.status_code == 200
+        except:
+            return False
     def _convert_laser_to_camera_coordinates(self, point_cloud):
         """Convert laser point cloud to camera coordinates"""
         if not point_cloud or not self.camera_matrix:

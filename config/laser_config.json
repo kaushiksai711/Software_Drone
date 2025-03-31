@@ -1,0 +1,12 @@
+{
+    "min_distance": 0.1,
+    "max_distance": 30.0,
+    "min_angle": 0,
+    "max_angle": 360,
+    "noise_threshold": 0.1,
+    "outlier_threshold": 3.0,
+    "calibration_time": 2.0,
+    "reconnect_attempts": 3,
+    "reconnect_delay": 1.0,
+    "checksum_enabled": true
+}
