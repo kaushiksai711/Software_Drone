@@ -31,3 +31,29 @@
 2025-03-28 14:30:39,044 - DroneMain - INFO - Starting sensor calibration
 2025-03-28 14:30:39,045 - FlightController - INFO - Calibrating flight controller
 2025-03-28 14:30:39,045 - FlightController - INFO - Disarming flight controller
+2025-03-28 14:50:14,395 - DroneMain - INFO - Initializing Drone Control System
+2025-03-28 14:50:14,489 - FlightController - INFO - Connected to flight controller on COM5
+2025-03-28 14:50:14,489 - CameraSystem - WARNING - Config file config/camera_config.json not found, using defaults
+2025-03-28 14:50:14,543 - CameraSystem - INFO - OpenCV windows initialized
+2025-03-28 14:50:14,552 - LaserSystem - WARNING - Config file config/laser_config.json not found, using defaults
+2025-03-28 14:50:14,560 - LaserSystem - ERROR - Connection attempt 1 failed: could not open port '/dev/ttyUSB1': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+2025-03-28 14:50:15,562 - LaserSystem - ERROR - Connection attempt 2 failed: could not open port '/dev/ttyUSB1': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+2025-03-28 14:50:16,564 - LaserSystem - ERROR - Connection attempt 3 failed: could not open port '/dev/ttyUSB1': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+2025-03-28 14:50:16,569 - LaserSystem - ERROR - Failed to connect to laser module after all attempts
+2025-03-28 14:50:16,572 - DroneMain - INFO - All subsystems initialized successfully
+2025-03-28 14:50:16,576 - DroneMain - INFO - Starting sensor calibration
+2025-03-28 14:50:16,582 - FlightController - INFO - Calibrating flight controller
+2025-03-28 14:50:16,590 - FlightController - INFO - Disarming flight controller
+2025-03-31 14:45:00,740 - DroneMain - INFO - Initializing Drone Control System
+2025-03-31 14:45:00,844 - FlightController - INFO - Connected to flight controller on COM5
+2025-03-31 14:45:00,845 - CameraSystem - WARNING - Config file config/camera_config.json not found, using defaults
+2025-03-31 14:45:00,899 - CameraSystem - INFO - OpenCV windows initialized
+2025-03-31 14:45:00,901 - LaserSystem - WARNING - Config file config/laser_config.json not found, using defaults
+2025-03-31 14:45:00,902 - LaserSystem - ERROR - Connection attempt 1 failed: could not open port '/dev/ttyUSB1': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+2025-03-31 14:45:01,904 - LaserSystem - ERROR - Connection attempt 2 failed: could not open port '/dev/ttyUSB1': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+2025-03-31 14:45:02,906 - LaserSystem - ERROR - Connection attempt 3 failed: could not open port '/dev/ttyUSB1': FileNotFoundError(2, 'The system cannot find the path specified.', None, 3)
+2025-03-31 14:45:02,907 - LaserSystem - ERROR - Failed to connect to laser module after all attempts
+2025-03-31 14:45:02,907 - DroneMain - INFO - All subsystems initialized successfully
+2025-03-31 14:45:02,908 - DroneMain - INFO - Starting sensor calibration
+2025-03-31 14:45:02,909 - FlightController - INFO - Calibrating flight controller
+2025-03-31 14:45:02,909 - FlightController - INFO - Disarming flight controller

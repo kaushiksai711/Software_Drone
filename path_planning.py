@@ -7,6 +7,9 @@ import numpy as np
 import math
 import logging
 import heapq
+import unittest
+from unittest.mock import Mock, patch
+import pytest
 
 logger = logging.getLogger("PathPlanning")
 
@@ -233,4 +236,113 @@ class PathPlanner:
                     )
         
         return smoothed_path
+
+class DroneTest(unittest.TestCase):
+    def setUp(self):
+        # Initialize drone with mock hardware
+        self.drone = Mock()
+        # Set up mock sensor values
+        self.drone.battery_level = 100
+        self.drone.altitude = 0
+        self.drone.gps_coordinates = (0, 0)
+        self.drone.motor_status = "stopped"
+
+    def test_takeoff(self):
+        """Test takeoff functionality"""
+        # Simulate takeoff
+        self.drone.takeoff()
+        
+        # Assert drone reaches proper altitude
+        self.drone.altitude = 10  # Simulated altitude
+        self.assertEqual(self.drone.altitude, 10)
+        self.assertEqual(self.drone.motor_status, "running")
+
+    def test_landing(self):
+        """Test landing functionality"""
+        # Set initial altitude
+        self.drone.altitude = 10
+        
+        # Simulate landing
+        self.drone.land()
+        
+        # Assert drone has landed
+        self.assertEqual(self.drone.altitude, 0)
+        self.assertEqual(self.drone.motor_status, "stopped")
+
+    def test_battery_check(self):
+        """Test battery monitoring"""
+        # Simulate battery drain
+        self.drone.battery_level = 20
+        
+        # Test low battery warning
+        with self.assertRaises(Warning):
+            self.drone.check_battery_status()
+
+    def test_movement_controls(self):
+        """Test directional controls"""
+        # Test forward movement
+        initial_position = self.drone.gps_coordinates
+        self.drone.move_forward(distance=10)
+        self.assertNotEqual(self.drone.gps_coordinates, initial_position)
+        
+        # Test rotation
+        initial_heading = 0
+        self.drone.rotate(90)
+        self.assertEqual(self.drone.heading, 90)
+
+    def test_emergency_protocols(self):
+        """Test emergency procedures"""
+        # Simulate connection loss
+        self.drone.connection_status = "disconnected"
+        
+        # Test auto-landing
+        self.drone.activate_emergency_protocol()
+        self.assertEqual(self.drone.altitude, 0)
+        self.assertEqual(self.drone.motor_status, "stopped")
+
+    def test_sensor_readings(self):
+        """Test sensor functionality"""
+        # Mock sensor data
+        mock_sensor_data = {
+            'temperature': 25,
+            'pressure': 1013,
+            'humidity': 60
+        }
+        
+        with patch('drone.get_sensor_readings') as mock_sensors:
+            mock_sensors.return_value = mock_sensor_data
+            readings = self.drone.get_sensor_readings()
+            
+            self.assertEqual(readings['temperature'], 25)
+            self.assertEqual(readings['pressure'], 1013)
+            self.assertEqual(readings['humidity'], 60)
+
+    def test_obstacle_avoidance(self):
+        """Test obstacle detection and avoidance"""
+        # Simulate obstacle detection
+        mock_obstacles = [(5, 0, 0)]  # obstacle at 5 meters ahead
+        
+        with patch('drone.scan_environment') as mock_scan:
+            mock_scan.return_value = mock_obstacles
+            self.drone.check_and_avoid_obstacles()
+            
+            # Assert drone took evasive action
+            self.assertNotEqual(self.drone.gps_coordinates, (0, 0))
+
+    def test_mission_execution(self):
+        """Test autonomous mission execution"""
+        mission_waypoints = [
+            (1, 1),
+            (2, 2),
+            (3, 3)
+        ]
+        
+        self.drone.execute_mission(mission_waypoints)
+        
+        # Assert mission completion
+        self.assertEqual(self.drone.gps_coordinates, (3, 3))
+        self.assertTrue(self.drone.mission_completed)
+
+if __name__ == '__main__':
+    unittest.main()
 
